@@ -1,21 +1,21 @@
-// db/connection.js
-const mysql = require('mysql2');
+const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const connection = mysql.createConnection({
+// Create a new Sequelize instance
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, null, {
     host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    dialect: 'mysql', // Use 'mysql' or 'mssql' if you were using SQL Server
+    logging: false, // Disable Sequelize logging; set to true to enable
 });
 
-connection.connect(err => {
-    if (err) {
-        console.error('Error connecting to the database:', err.stack);
-        return;
+// Test the connection
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Connection to the database has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
     }
-    console.log('Connected to the database');
-});
+})();
 
-module.exports = connection;
+module.exports = sequelize;

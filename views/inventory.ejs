@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventar</title>
+    <link rel="stylesheet" href="css/inventory.css">
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2 class="text-center">Hundends Gårdbutik Kontrolpanel</h2>
+    <a href="/dashboard">Hjem</a>
+    <a href="/createItem">Opret varer</a>
+    <a href="/inventory">Se varer</a>
+</div>
+<div class="content">
+    <h1>Varer</h1>
+
+    <!-- Dropdown to Filter Items -->
+    <div class="filter-section">
+        <label for="item-type">Filtrer efter type:</label>
+        <select id="item-type" onchange="filterItems()">
+            <option value="">Alle</option>
+            <option value="tørfodder">Tørfodder</option>
+            <option value="godbidder">Godbidder</option>
+            <option value="barf">Barf</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Vareroversigt</div>
+        <div class="card-body">
+            <table class="table" id="inventory-table">
+                <thead>
+                <tr>
+                    <th>Billede</th>
+                    <th>Type</th>
+                    <th>Navn</th>
+                    <th>Mængde</th>
+                    <th>Pris ved køb</th>
+                    <th>Pris ved salg</th>
+                    <th>Beskrivelse</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (items.length > 0) { %>
+                    <% items.forEach(item => { %>
+                        <tr class="item-row" data-type="<%= item.type %>">
+                            <td> <img src="<%= item.image_url %>" alt="<%= item.name %>" style="width:250px"/></td>
+                            <td><%= item.type %></td>
+                            <td><%= item.name %></td>
+                            <td><%= item.quantity %> stk.</td>
+                            <td><%= item.priceBuy %> kr</td>
+                            <td><%= item.priceSell %> kr</td>
+                            <td><%= item.description %></td>
+                            <td>
+                                <!-- Edit Button -->
+                                <a href="/item/<%= item.id %>/update" class="btn btn-primary btn-sm">Rediger</a>
+                                <!-- Delete Button with confirmation -->
+                                <form action="/item/<%= item.id %>/delete" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm">Slet</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="8">Ingen varer fundet.</td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(event) {
+        // Confirmation dialog
+        if (!confirm("Er du sikker på, at du vil slette denne varer?")) {
+            event.preventDefault();  // Prevent form submission
+        }
+    }
+
+    // Function to filter items based on type selected in the dropdown
+    function filterItems() {
+        const selectedType = document.getElementById('item-type').value;
+        const rows = document.querySelectorAll('.item-row');
+
+        rows.forEach(row => {
+            const itemType = row.getAttribute('data-type');
+            if (selectedType === "" || itemType === selectedType) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+</script>
+</body>
+</html>

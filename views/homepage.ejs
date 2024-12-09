@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmstead Fido's Food - Quality Dog Food from Our Farm to Your Best Friend</title>
+    <title>Forside</title>
     <link rel="stylesheet" href="css/homepage.css">
 </head>
 <body>
 <header>
     <div class="header-content">
-        <img src="images/HundensGårdbutik-logo.png" alt="logo" style="width:128px;height:128px">
+        <a href="/"><img src="images/HundensGårdbutik-logo.png" alt="logo" style="width:128px;height:128px"></a>
+
         <div class="header-text">
             <p class="tagline">Quality Dog Food <br>from Our Farm to Your Best Friend</p>
         </div>
@@ -25,41 +26,35 @@
         <h2>About Farmstead Fido's Food</h2>
         <p>Welcome to Farmstead Fido's Food, where we believe in providing the best nutrition for your furry friends. Our small farm shop specializes in high-quality, locally sourced dog food that's made with love and care.</p>
     </section>
-
+    <h2>Vores produkter</h2>
     <section id="products">
-        <h2>Our Products</h2>
-        <div class="product">
-            <img src="/placeholder.svg?height=200&width=200" alt="Farm Fresh Kibble">
-            <h3>Farm Fresh Kibble</h3>
-            <p>Our signature kibble is made with fresh ingredients straight from our farm. Packed with nutrients and irresistible flavor, it's perfect for dogs of all sizes.</p>
-        </div>
-        <div class="product">
-            <img src="/placeholder.svg?height=200&width=200" alt="Meaty Meal Toppers">
-            <h3>Meaty Meal Toppers</h3>
-            <p>Add an extra boost of protein and flavor to your dog's meal with our farm-raised meat toppers. Made from high-quality cuts, these toppers will make every meal special.</p>
-        </div>
-        <div class="product">
-            <img src="/placeholder.svg?height=200&width=200" alt="Healthy Treats">
-            <h3>Healthy Treats</h3>
-            <p>Reward your pup with our healthy, homemade treats. Made with natural ingredients and no artificial preservatives, these treats are both delicious and nutritious.</p>
-        </div>
+        <% if (items.length > 0) { %>
+            <% items.forEach(item => { %>
+                <div class="product">
+                    <img src="<%= item.image_url %>" alt="<%= item.name %>" style="width:500px;height:256px"/>
+                    <h3><%= item.name %></h3>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No products available.</p>
+        <% } %>
     </section>
 </main>
-
 <footer>
-    <p> ÅBNINGSTIDER
-        <br> Mandag - Fredag 11-18.00
-        <br>Lørdag 14-18.00 
-        <br>Søndag 11-18
-        <br>Eller efter aftale 😊
-    </p>
+    <div class="open-times">
+        <p>ÅBNINGSTIDER
+            <br> Mandag - Fredag 11-18.00
+            <br>Lørdag 14-18.00
+            <br>Søndag 11-18
+            <br>Eller efter aftale 😊
+        </p>
+    </div>
     <div class="contact-info">
-        <address>Adresse: Tvindelstrupvej 38
+        <address> Adresse: Tvindelstrupvej 38
             <br>4100 Ringsted
             <br>Tlf. 61 66 11 66
             <br> <a href="mailto:Email:ld@hundensgaardbutik.dk">ld@hundensgaardbutik.dk</a>
         </address>
-
     </div>
 </footer>
 </body>

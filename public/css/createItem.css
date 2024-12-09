@@ -1,0 +1,113 @@
+/* General Body Styling */
+body {
+    background-color: #f4f6f9;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    padding: 1rem;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #1abc9c;
+}
+
+/* Main Content Area */
+.content {
+    margin-left: 260px; /* Space for sidebar */
+    padding: 20px;
+}
+
+/* Heading Styling */
+h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    margin-left: 50px;
+}
+
+/* Form Styling */
+form {
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); /* More prominent shadow for better contrast */
+    border-radius: 8px;
+    max-width: 700px;
+    margin: 0 auto;
+    border-top: 5px solid #3498db; /* Add a top border to match the button color */
+}
+
+form label {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 600; /* Make labels stand out more */
+}
+form img{
+    margin-left: 50px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 12px; /* Increase padding for a more spacious look */
+    margin: 12px 0; /* Slightly larger margin to create spacing */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out; /* Smooth transition for input focus */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #3498db; /* Highlight inputs with the same color as the button */
+    outline: none;
+}
+
+/* Button Styling */
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 15px 25px; /* Larger button for more impact */
+    border-radius: 5px;
+    border: none;
+    font-size: 1.1rem; /* Slightly larger text */
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+

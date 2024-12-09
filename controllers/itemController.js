@@ -1,87 +1,120 @@
 const Item = require('../models/itemModel');
-const connection = require('../database/db.js');
+const fs = require('fs');
+const path = require('path');
 
-// Create Animal
-exports.creatItem = (req, res) => {
-    const { name, quantity, priceBuy, priceSell, description } = req.body;
-    const query = 'INSERT INTO item (name, quantity, priceBuy, priceSell, description) VALUES (?, ?, ?, ?,?)';
-    connection.execute(query, [name, quantity, priceBuy, priceSell, description], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({ message: 'Item created successfully'});
-    });
+// Create Item
+exports.createItem = async (req, res) => {
+    const { type, name, quantity, priceBuy, priceSell, description } = req.body;
+    const imagePath = req.file ? '/images/' + req.file.filename : null; // Get the image path if it exists
+
+    try {
+        const newItem = await Item.create({
+            type,
+            name,
+            quantity,
+            priceBuy,
+            priceSell,
+            description,
+            image_url: imagePath
+        });
+
+        await newItem.save();
+
+        res.redirect('/dashboard');  // Redirect after successful creation
+    } catch (err) {
+        res.status(500).json({ error: err.message });  // Handle any errors
+    }
 };
 
 // Update Item
-exports.updateItem = (req, res) => {
+exports.updateItem = async (req, res) => {
     const { id } = req.params;  // The ID of the item to update from the URL
-    const { name, quantity, priceBuy, priceSell, description } = req.body;  // The updated data
+    const { type, name, quantity, priceBuy, priceSell, description } = req.body;
+    const imagePath = req.file ? '/images/' + req.file.filename : null; // Get the image path if it exists
 
-    const query = `
-        UPDATE item 
-        SET name = ?, quantity = ?, priceBuy = ?, priceSell = ?, description = ? 
-        WHERE id = ?
-    `;
-    connection.execute(query, [name, quantity, priceBuy, priceSell, description, id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (result.affectedRows === 0) {
+    try {
+        const item = await Item.findByPk(id);
+
+        if (!item) {
             return res.status(404).json({ message: 'Item not found' });
         }
-        res.status(200).json({ message: 'Item updated successfully' });
-    });
+
+        await item.update({
+            type,
+            name,
+            quantity,
+            priceBuy,
+            priceSell,
+            description,
+            image_url: imagePath || item.image_url // If no new image, keep the old one
+        });
+        res.redirect('/inventory');
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 
-// Get All items
-exports.getAllItems = (req, res) => {
-    const query = 'SELECT * FROM item';
-    connection.execute(query, (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(results);
-    });
-};
-
-// Get Animal by ID
-exports.getItemById = (req, res) => {
+// Get Item by ID
+exports.getItemById = async (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT * FROM item WHERE id = ?';
 
-    connection.execute(query, [id], (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
+    try {
+        const item = await Item.findByPk(id);
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found' });
         }
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'item not found' });
-        }
-        res.json(results[0]);
-    });
+        res.json(item);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
-
-// controllers/itemController.js
 
 // Delete Item
-exports.deleteItem = (req, res) => {
-    const { id } = req.params;  // The ID of the item to delete from the URL
+exports.deleteItem = async (req, res) => {
+    const { id } = req.params;
 
-    const query = 'DELETE FROM item WHERE id = ?';
-    connection.execute(query, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (result.affectedRows === 0) {
+    try {
+        const item = await Item.findByPk(id);
+
+        if (!item) {
             return res.status(404).json({ message: 'Item not found' });
         }
-        res.status(200).json({ message: 'Item deleted successfully' });
-    });
+
+        // Delete the image from the server if it exists
+        const imagePath = item.image_url;
+
+        if (imagePath) {
+            const filePath = path.join(__dirname,  '..','public', imagePath);
+            try {
+                await fs.promises.unlink(filePath); // Use promises with fs.unlink
+                console.log(`Image deleted: ${filePath}`);
+            } catch (err) {
+                console.error("Error deleting image:", err);
+            }
+        }
+
+        // Delete the item from the database
+        await item.destroy();
+
+        res.redirect('/inventory');
+    } catch (err) {
+        console.error("Error in delete operation:", err);
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.getHomepage = (req, res) => {
-    res.render("homepage");
+// Get Homepage (used in your case to show all items)
+exports.getHomepage = async (req, res) => {
+    try {
+        const items = await Item.findAll();
+        res.render('homepage', { items });
+    } catch (err) {
+        console.error('Error fetching items:', err.message);
+        res.render('homepage', { items: [] }); // Render an empty array if there's an error
+    }
 };
+
+
 
 
