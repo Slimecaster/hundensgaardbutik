@@ -9,7 +9,7 @@
 <body>
 <header>
     <div class="header-content">
-        <a href="/"><img src="images/HundensGårdbutik-logo.png" alt="logo" style="width:128px;height:128px"></a>
+        <a href="/"><img src="imagesStatic/HundensGårdbutik-logo.png" alt="logo" style="width:128px;height:128px"></a>
 
         <div class="header-text">
             <p class="tagline">Quality Dog Food <br>from Our Farm to Your Best Friend</p>
@@ -31,7 +31,7 @@
         <% if (items.length > 0) { %>
             <% items.forEach(item => { %>
                 <div class="product">
-                    <img src="<%= item.image_url %>" alt="<%= item.name %>" style="width:500px;height:256px"/>
+                    <img src="/images/<%= item.id %>" alt="<%= item.name %>" style="width:500px;height:256px"/>
                     <h3><%= item.name %></h3>
                 </div>
             <% }); %>

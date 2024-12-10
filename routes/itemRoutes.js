@@ -7,6 +7,8 @@ const security = require("../middlewares/security");
 
 router.get('/', itemController.getHomepage);
 
+router.get('/images/:id', itemController.serveImage);
+
 // Route for creating a new item with image upload
 router.post('/createItem', security.checkRole("admin"), imageUpload.single('image'), itemController.createItem);
 

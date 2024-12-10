@@ -5,7 +5,7 @@ const path = require('path');
 // Create Item
 exports.createItem = async (req, res) => {
     const { type, name, quantity, priceBuy, priceSell, description } = req.body;
-    const imagePath = req.file ? '/images/' + req.file.filename : null; // Get the image path if it exists
+    const imageBuffer = req.file ? req.file.buffer : null; // Get the image as binary data
 
     try {
         const newItem = await Item.create({
@@ -15,22 +15,20 @@ exports.createItem = async (req, res) => {
             priceBuy,
             priceSell,
             description,
-            image_url: imagePath
+            image_data: imageBuffer, // Save image as binary data
         });
 
-        await newItem.save();
-
-        res.redirect('/dashboard');  // Redirect after successful creation
+        res.redirect('/dashboard'); // Redirect after successful creation
     } catch (err) {
-        res.status(500).json({ error: err.message });  // Handle any errors
+        res.status(500).json({ error: err.message });
     }
 };
 
 // Update Item
 exports.updateItem = async (req, res) => {
-    const { id } = req.params;  // The ID of the item to update from the URL
+    const { id } = req.params;
     const { type, name, quantity, priceBuy, priceSell, description } = req.body;
-    const imagePath = req.file ? '/images/' + req.file.filename : null; // Get the image path if it exists
+    const imageBuffer = req.file ? req.file.buffer : null; // Get the image as binary data
 
     try {
         const item = await Item.findByPk(id);
@@ -46,13 +44,15 @@ exports.updateItem = async (req, res) => {
             priceBuy,
             priceSell,
             description,
-            image_url: imagePath || item.image_url // If no new image, keep the old one
+            image_data: imageBuffer || item.image_data, // Update only if new image is provided
         });
+
         res.redirect('/inventory');
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 
 // Get Item by ID
@@ -112,6 +112,22 @@ exports.getHomepage = async (req, res) => {
     } catch (err) {
         console.error('Error fetching items:', err.message);
         res.render('homepage', { items: [] }); // Render an empty array if there's an error
+    }
+};
+
+exports.serveImage = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const item = await Item.findByPk(id);
+        if (!item || !item.image_data) {
+            return res.status(404).send('Image not found');
+        }
+
+        res.contentType('image/jpeg'); // Set content type to match the image type
+        res.send(item.image_data); // Send the binary image data
+    } catch (err) {
+        res.status(500).send(err.message);
     }
 };
 

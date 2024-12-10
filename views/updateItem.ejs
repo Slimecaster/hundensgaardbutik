@@ -45,7 +45,7 @@
 
         <label for="image">Billede:</label>
         <input type="file" id="image" name="image" accept="image/*"><br><br>
-        <small>Nuvarande billede: <img src="<%= item.image_url %>" alt="Current Image" style="max-width: 500px;"></small><br><br>
+        <small>Nuvarande billede: <img src="/images/<%= item.id %>" alt="Current Image" style="max-width: 500px;"></small><br><br>
 
         <button type="submit">Opdater varer</button>
     </form>

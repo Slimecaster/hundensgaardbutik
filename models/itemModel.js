@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../database/db');  // Your database connection
+const sequelize = require('../database/db'); // Your database connection
 
 const Item = sequelize.define('Item', {
-    type:{
+    type: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -25,16 +25,17 @@ const Item = sequelize.define('Item', {
     description: {
         type: DataTypes.STRING,
     },
-    image_url: {
-        type: DataTypes.STRING,  // Store the image path in this column
+    image_data: {
+        type: DataTypes.BLOB('long'), // Store image as binary data
+        allowNull: true,
     },
 }, {
     tableName: 'item', // Specify the correct table name
     freezeTableName: true, // Prevent Sequelize from pluralizing the table name
-    timestamps: false, // Disable the creation of createdAt and updatedAt fields
+    timestamps: false, // Disable createdAt and updatedAt
 });
 
-// Sync model with the database (useful for development)
+// Sync model with the database
 sequelize.sync({ alter: true }).then(() => {
     console.log('Table created or synced');
 });
